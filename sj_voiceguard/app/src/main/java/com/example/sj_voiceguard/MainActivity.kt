@@ -1,16 +1,12 @@
 package com.example.sj_voiceguard
 
-import android.media.RingtoneManager
-import android.os.Build
-import android.os.Vibrator
-import android.os.VibrationEffect
 import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.Ringtone
 import android.os.Bundle
-import android.os.VibratorManager
+import android.os.Vibrator
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -30,7 +26,8 @@ import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
-import okhttp3.MediaType.Companion.toMediaType // 확장 함수 import
+import okhttp3.MediaType.Companion.toMediaType
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,8 +39,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recordButton: ImageButton
     private lateinit var speechResultText: TextView
 
-    // ChatGPT API 설정
-    private val apiKey = "MT_API_KEY" // 실제 ChatGPT API 키로 교체하세요
+    // API 키 설정
+    private val chatGPTApiKey = "YOUR_CHATGPT_API_KEY" // 실제 ChatGPT API 키로 교체하세요
+    private val upstageApiKey = "api2" // 실제 Upstage API 키로 교체하세요
+    private val anthropicApiKey = "api3" // 실제 Anthropic API 키로 교체하세요
 
     // 코루틴 관련 변수
     private val scope = CoroutineScope(Dispatchers.Main + Job())
@@ -116,7 +115,6 @@ class MainActivity : AppCompatActivity() {
             speechResultText.text = "" // 이전 결과 초기화
             recordButton.setImageResource(R.drawable.call_out) // 중지 이미지로 변경
 
-            // getRecognizerIntent() 사용
             val recognizerIntent = getRecognizerIntent()
             speechRecognizer.setRecognitionListener(createRecognitionListener())
             speechRecognizer.startListening(recognizerIntent)
@@ -135,7 +133,6 @@ class MainActivity : AppCompatActivity() {
         analysisJob?.cancel()
         alertDialog?.dismiss()
 
-        // AgreeAct로 이동
         val intent = Intent(this, AgreeAct::class.java)
         startActivity(intent)
         finish()
@@ -145,18 +142,15 @@ class MainActivity : AppCompatActivity() {
     private fun createRecognitionListener(): RecognitionListener {
         return object : RecognitionListener {
             override fun onResults(results: Bundle?) {
-                val matches =
-                    results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 matches?.get(0)?.let { result -> handleFinalResult(result) }
-                // 올바른 Intent로 다시 리스닝 시작
                 if (isListening) {
                     speechRecognizer.startListening(getRecognizerIntent())
                 }
             }
 
             override fun onPartialResults(partialResults: Bundle?) {
-                val matches =
-                    partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 matches?.get(0)?.let { result ->
                     if (result != currentPartialText) {
                         currentPartialText = result
@@ -167,7 +161,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onError(error: Int) {
                 if (isListening) {
-                    // 올바른 Intent로 다시 리스닝 시작
                     speechRecognizer.startListening(getRecognizerIntent())
                 }
             }
@@ -191,8 +184,6 @@ class MainActivity : AppCompatActivity() {
     private fun handlePartialResult(result: String) {
         runOnUiThread {
             speechResultText.text = accumulatedText + " " + result
-
-            // 스크롤을 항상 맨 아래로 이동
             val scrollView: ScrollView = findViewById(R.id.scrollView)
             scrollView.post {
                 scrollView.fullScroll(View.FOCUS_DOWN)
@@ -205,11 +196,8 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread {
             accumulatedText += if (accumulatedText.isEmpty()) result else " $result"
             speechResultText.text = accumulatedText
-
-            // 현재 부분 결과 초기화
             currentPartialText = ""
 
-            // 스크롤을 항상 맨 아래로 이동
             val scrollView: ScrollView = findViewById(R.id.scrollView)
             scrollView.post {
                 scrollView.fullScroll(View.FOCUS_DOWN)
@@ -221,7 +209,7 @@ class MainActivity : AppCompatActivity() {
     private fun startRealtimeAnalysis() {
         analysisJob = scope.launch {
             while (isActive) {
-                delay(5000) // 5초마다 분석 수행
+                delay(1000) // 5초마다 분석 수행
                 if (accumulatedText.isNotEmpty()) {
                     val textToAnalyze = accumulatedText
                     val analysis = analyzeText(textToAnalyze)
@@ -236,14 +224,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var ringtone: Ringtone
 
-    // GPT 분석 결과를 경고창에 표시하는 메서드
+    // GPT, Upstage, Claude의 분석 결과를 경고창에 표시하는 메서드
     private fun showAnalysisResult(analysis: String) {
         alertDialog?.dismiss()
 
-        // GPT 응답을 그대로 경고창에 표시
         alertDialog = AlertDialog.Builder(this)
-            .setTitle("GPT 분석 결과")
-            .setMessage(analysis) // GPT에서 받은 전체 내용을 표시
+            .setTitle("AI 분석 결과")
+            .setMessage(analysis)
             .setPositiveButton("확인") { dialog, _ ->
                 dialog.dismiss()
             }
@@ -253,10 +240,10 @@ class MainActivity : AppCompatActivity() {
         alertDialog?.show()
     }
 
-    // ChatGPT API를 사용한 텍스트 분석 메서드
+    // 세 AI 모델을 사용하여 텍스트 분석
     private suspend fun analyzeText(text: String): String {
         val prompt = """
-        주어진 통화 텍스트 데이터를 분석하여 해당 통화가 보이스피싱인지 판단하고, 보이스피싱 위험 점수를 산출하세요. 분석은 각 보이스피싱 유형별 판단 기준에 따라 이루어지며, Chain of Thought 방식을 사용하여 단계별로 판단합니다. 최종 결과는 지정된 형식으로 출력하세요.
+                주어진 통화 텍스트 데이터를 분석하여 해당 통화가 보이스피싱인지 판단하고, 보이스피싱 위험 점수를 산출하세요. 분석은 각 보이스피싱 유형별 판단 기준에 따라 이루어지며, Chain of Thought 방식을 사용하여 단계별로 판단합니다. 최종 결과는 지정된 형식으로 출력하세요.
                 ---
                 분석 방법:
                 1. 통화 데이터 분석: 통화 내용을 자세히 읽고, 중요한 정보와 키워드를 파악합니다.
@@ -335,20 +322,28 @@ class MainActivity : AppCompatActivity() {
                 ---
                 아래에 주어진 통화 데이터를 분석하여 위의 지침에 따라 판단하고, 결과를 지정된 형식으로 출력하세요.
                 ---
-        통화 내역: "$text"
-        """
+                
+                [$text]
+                """
 
-        return analyzeTextWithChatGPT(prompt)
+        // val chatGPTAnalysis = analyzeTextWithChatGPT(prompt)
+        // val upstageAnalysis = analyzeTextWithUpstage(prompt)
+        val claudeAnalysis = analyzeTextWithClaude(prompt)
+
+        return """
+           Claude 분석 결과:
+            $claudeAnalysis
+        """.trimIndent()
     }
 
-    // OpenAI ChatGPT API와 통신하는 메서드
-    private suspend fun analyzeTextWithChatGPT(prompt: String): String {
+    // ChatGPT API 통신 함수
+    private suspend fun analyzeTextWithChatGPT(text: String): String {
         val client = OkHttpClient()
         val url = "https://api.openai.com/v1/chat/completions"
 
         val jsonObject = JSONObject().apply {
-            put("model", "gpt-4o-mini") // 사용 가능한 모델 이름으로 수정
-            put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", prompt)))
+            put("model", "gpt-4o-mini")
+            put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", text)))
             put("max_tokens", 2048)
             put("temperature", 0.9)
         }
@@ -359,7 +354,7 @@ class MainActivity : AppCompatActivity() {
 
         val request: Request = Request.Builder()
             .url(url)
-            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Authorization", "Bearer $chatGPTApiKey")
             .post(body)
             .build()
 
@@ -368,15 +363,13 @@ class MainActivity : AppCompatActivity() {
                 client.newCall(request).execute().use { response ->
                     val responseData = response.body?.string()
 
-                    // HTTP 응답 코드 확인
                     if (!response.isSuccessful) {
-                        // 오류 응답 처리
                         val errorJson = JSONObject(responseData ?: "")
-                        val errorMessage = errorJson.optJSONObject("error")?.optString("message") ?: "알 수 없는 오류가 발생했습니다."
+                        val errorMessage = errorJson.optJSONObject("error")?.optString("message")
+                            ?: "알 수 없는 오류가 발생했습니다."
                         return@withContext "API 요청 실패: $errorMessage"
                     }
 
-                    // 정상 응답 처리
                     val jsonResponse = JSONObject(responseData ?: "")
                     val choicesArray = jsonResponse.optJSONArray("choices")
 
@@ -392,6 +385,132 @@ class MainActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 return@withContext "오류가 발생했습니다: ${e.message}"
+            }
+        }
+    }
+
+    // Upstage API 통신 함수
+    private suspend fun analyzeTextWithUpstage(text: String): String {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS) // 연결 타임아웃 설정
+            .writeTimeout(30, TimeUnit.SECONDS)   // 쓰기 타임아웃 설정
+            .readTimeout(30, TimeUnit.SECONDS)    // 읽기 타임아웃 설정
+            .build()
+        val url = "https://api.upstage.ai/v1/solar/chat/completions"
+        val jsonObject = JSONObject().apply {
+            put("model", "solar-1-mini-chat")
+            put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", text)))
+            put("stream", false)
+        }
+
+        val body: RequestBody = RequestBody.create(
+            "application/json; charset=utf-8".toMediaType(), jsonObject.toString()
+        )
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .addHeader("Authorization", "Bearer $upstageApiKey")
+            .post(body)
+            .build()
+
+        return withContext(Dispatchers.IO) {
+            try {
+                client.newCall(request).execute().use { response ->
+                    val responseData = response.body?.string()
+
+                    if (!response.isSuccessful) {
+                        val errorJson = JSONObject(responseData ?: "")
+                        val errorMessage = errorJson.optJSONObject("error")?.optString("message")
+                            ?: "Upstage API 오류 발생"
+                        return@withContext "Upstage API 요청 실패: $errorMessage"
+                    }
+
+                    val jsonResponse = JSONObject(responseData ?: "")
+                    val choicesArray = jsonResponse.optJSONArray("choices")
+
+                    if (choicesArray == null || choicesArray.length() == 0) {
+                        return@withContext "Upstage 응답이 비어 있습니다."
+                    }
+
+                    val messageContent = choicesArray.getJSONObject(0)
+                        .getJSONObject("message")
+                        .getString("content")
+
+                    return@withContext messageContent
+                }
+            } catch (e: Exception) {
+                return@withContext "Upstage 통신 오류: ${e.message}"
+            }
+        }
+    }
+
+    private suspend fun analyzeTextWithClaude(text: String): String {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .build()
+
+        val url = "https://api.anthropic.com/v1/messages"
+
+        // JSON payload 생성
+        val jsonPayload = JSONObject().apply {
+            put("model", "claude-3-5-sonnet-20240620")
+            put("max_tokens", 4000)
+            put("temperature", 0.9)
+            put("messages", JSONArray().put(JSONObject().put("role", "user").put("content", text)))
+        }.toString()
+
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("x-api-key", anthropicApiKey)
+            .addHeader("content-type", "application/json")
+            .addHeader("anthropic-version", "2023-06-01")
+            .post(RequestBody.create("application/json".toMediaType(), jsonPayload))
+            .build()
+
+        return withContext(Dispatchers.IO) {
+            try {
+                client.newCall(request).execute().use { response ->
+                    val responseData = response.body?.string()
+
+                    // 응답 데이터 디버깅 출력
+                    println("응답 코드: ${response.code}")
+                    println("응답 데이터: $responseData")
+
+                    if (responseData.isNullOrEmpty()) {
+                        return@withContext "응답 데이터가 비어 있습니다."
+                    }
+
+                    if (!response.isSuccessful) {
+                        val errorJson = JSONObject(responseData ?: "")
+                        val errorMessage = errorJson.optJSONObject("error")?.optString("message")
+                            ?: "API 요청 실패"
+                        return@withContext "API 요청 실패: $errorMessage"
+                    }
+
+                    // 응답 데이터 파싱
+                    val jsonResponse = JSONObject(responseData)
+                    val contentArray = jsonResponse.optJSONArray("content")
+
+                    if (contentArray == null || contentArray.length() == 0) {
+                        return@withContext "API 응답에서 'content' 필드가 비어 있습니다."
+                    }
+
+                    // content 배열에서 텍스트 추출
+                    val textContent = StringBuilder()
+                    for (i in 0 until contentArray.length()) {
+                        val contentItem = contentArray.getJSONObject(i)
+                        if (contentItem.optString("type") == "text") {
+                            textContent.append(contentItem.optString("text"))
+                        }
+                    }
+
+                    // 경고창에 표시할 최종 텍스트
+                    return@withContext textContent.toString()
+                }
+            } catch (e: Exception) {
+                return@withContext "오류 발생: ${e.message}"
             }
         }
     }
