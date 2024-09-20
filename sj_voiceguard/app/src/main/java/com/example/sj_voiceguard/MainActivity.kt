@@ -1,10 +1,14 @@
 package com.example.sj_voiceguard
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.Ringtone
+import android.media.RingtoneManager
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -39,10 +43,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var speechResultText: TextView
 
     // API 키 설
-    private val chatGPTApiKey = "api1" // 실제 ChatGPT API 키로 교체하세요
-    private val upstageApiKey = "api2" // 실제 Upstage API 키로 교체하세요
-    private val anthropicApiKey = "api3" // 실제 Anthropic API 키로 교체하세요
-    private val geminiApiKey = "api4" // Gemini AI API 키 추가
+    private val chatGPTApiKey = "" // 실제 ChatGPT API 키로 교체하세요
+    private val upstageApiKey = "" // 실제 Upstage API 키로 교체하세요
+    private val anthropicApiKey = "" // 실제 Anthropic API 키로 교체하세요
+    private val geminiApiKey = "" // Gemini AI API 키 추가
 
     // 코루틴 관련 변수
     private val scope = CoroutineScope(Dispatchers.Main + Job())
@@ -53,6 +57,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -325,6 +331,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var vibrator: Vibrator
     private lateinit var ringtone: Ringtone
 
     // GPT 분석 결과만 경고창에 표시하는 메서드
@@ -333,12 +340,28 @@ class MainActivity : AppCompatActivity() {
         Log.d("AnalysisResult", "평균 점수 : $averageScore")
 
         // 평균 점수가 7 이상일 때만 경고창을 표시
-        if (averageScore >= 7) {
+        if (averageScore >= 1) {
+            // 진동 실행
+            vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val vibrationEffect = VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
+                vibrator.vibrate(vibrationEffect)
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(500)
+            }
+
+            // 알람 소리 실행
+            val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            ringtone = RingtoneManager.getRingtone(applicationContext, alarmSound)
+            ringtone.play()
+
             alertDialog = AlertDialog.Builder(this)
                 .setTitle("AI 분석 경고")
                 .setMessage("경고: 보이스피싱 위험이 있습니다!\n\nGPT 분석 내용:\n$gptAnalysis")
                 .setPositiveButton("확인") { dialog, _ ->
                     dialog.dismiss()
+                    ringtone.stop() // 알람 소리 중지
                 }
                 .setCancelable(false)
                 .create()
