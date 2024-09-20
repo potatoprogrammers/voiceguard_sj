@@ -1,0 +1,166 @@
+[
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_rounded_border.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/rounded_border.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/layout_callmain.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/layout/callmain.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_fluent_call.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/fluent_call.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_warning_icon.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/warning_icon.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_voice_guard_logo.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/voice_guard_logo.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_ripple_effect.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/ripple_effect.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_some_id1.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/some_id1.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_vector_3.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/vector_3.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/layout_activity_guardians.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/layout/activity_guardians.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_vector_2.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/vector_2.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_your_loading_image.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/your_loading_image.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/layout_dialog_add_guardian.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/layout/dialog_add_guardian.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_some_id.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/some_id.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_voice_guard_logono2.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/voice_guard_logono2.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_button_reject.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/button_reject.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/xml_data_extraction_rules.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/xml_backup_rules.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/layout_activity_agree.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/layout/activity_agree.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/layout_activity_splash.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_call_scipts.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/call_scipts.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_voice_guard_logono1.jpg.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/voice_guard_logono1.jpg"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/layout_activity_main.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_button_answer.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/button_answer.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/layout_reportcheck.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/layout/reportcheck.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_background.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/background.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_call_out.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/call_out.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/drawable_voiceguard_logo.png.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/drawable/voiceguard_logo.png"
+    },
+    {
+        "merged": "com.example.sj_voiceguard.app-debug-31:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.example.sj_voiceguard.app-main-33:/mipmap-xhdpi/ic_launcher_round.webp"
+    }
+]
